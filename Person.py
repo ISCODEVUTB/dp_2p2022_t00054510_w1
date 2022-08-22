@@ -1,8 +1,21 @@
 from abc import ABC 
 from Order import Location
+from enum import Enum
+#ENUMERACIONES 
 
+class PersonType(Enum):
+    # CLASS FOR PERSON TYPES 
+    NATURAL = "NATURAL"
+    LEGAL = "LEGAL"
+
+class Role(Enum):
+    # CLASS FOR ROLE TYPES
+    ADMIN ="ADMIN"
+    USER = "USER"
+    DRIVER = "DRIVER"
+#CLASES DE OBJETOS DE PERSONAS E INTERNOS
 class Person(ABC):
-    def __init__(self, id , nationalid, idType, personType, name, email, lastName, location, validation = False):
+    def __init__(self, id: int, nationalid: str, idType, personType, name, email, lastName, location: Location, validation = False):
         self._id = id
         self._nationalid = nationalid
         self._idType = idType
@@ -38,6 +51,7 @@ class PersonManager():
         location = Location(country, state, city, addresLine1, addresLine2, zipCode)
         if typeOfPerson == 1:
             newCustomer = Customer(id, nationalid, idType, personType, name, email, lastName, location, validation = False)
+            self._customers.append(newCustomer)
         else:
             role = input("Role: ")
             accountId = input("Account ID: ")
@@ -45,10 +59,17 @@ class PersonManager():
             bankName = input("Bank Name: ")
             newBankAccount = BankAccount(accountId, bankName, bankId)
             newInternal = Internal(id, nationalid, idType, personType, name, email, lastName, location, role, newBankAccount, validation = False)
+            self._internals.append(newInternal)
 
+class BankAccount():
+    def __init__(self, accountId, bankName, bankId, balance = 0.0):
+        self._accountId = accountId
+        self._bankName = bankName
+        self._bankId = bankId
+        self._balance = balance
 
 class Customer(Person):
-    def __init__(self, id, nationalid, idType, personType, name, email, lastName, location, validation = False, invoices = [], creditCard = [], shipping = [],):
+    def __init__(self, id: int, nationalid: str, idType, personType, name, email, lastName, location: Location, validation = False, invoices = [], creditCard = [], shipping = [],):
         super().__init__(id, nationalid, idType, personType, name, email, lastName, location, validation = False)
         self._creditCard = creditCard
         self._invoices = invoices
@@ -63,7 +84,7 @@ class Customer(Person):
 
 
 class Internal(Person):
-    def __init__(self, id, nationalid, idType, personType, name, email, lastName, location, role, account, validation = False, invoices = [], creditCard = [], shipping = [],):
+    def __init__(self, id: int, nationalid: str, idType: str, personType, name, email, lastName, location: Location, role, account: BankAccount, validation = False, invoices = [], creditCard = [], shipping = [],):
         super().__init__(id, nationalid, idType, personType, name, email, lastName, location, validation = False)
         self._role = role
         self._account = account 
@@ -80,12 +101,6 @@ class CreditCard():
     def validation():
         return False
 
-class BankAccount():
-    def __init__(self, accountId, bankName, bankId, balance = 0.0):
-        self._accountId = accountId
-        self._bankName = bankName
-        self._bankId = bankId
-        self._balance = balance
 
     def deposit(self, ammount):
         self._deposit += ammount
